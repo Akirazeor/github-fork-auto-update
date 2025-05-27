@@ -16,14 +16,14 @@
 
       * 打开你在 GitHub 上的 Fork 项目。
       * 点击仓库导航栏中的 **Actions** 标签页。
-        ![image](https://github.com/user-attachments/assets/fbbb7362-e26c-4727-b533-226e6a72e482)
+![image](https://github.com/user-attachments/assets/fbbb7362-e26c-4727-b533-226e6a72e482)
 
 
 2.  **新建 Workflow 文件**：
 
       * 在 Actions 页面，点击 **New workflow** 按钮。
       * 接着，选择 **set up a workflow yourself** (自己设置一个工作流程)。
-        ![image](https://github.com/user-attachments/assets/6a67ef85-e328-44b1-b05e-0cc126d5a817)
+![image](https://github.com/user-attachments/assets/6a67ef85-e328-44b1-b05e-0cc126d5a817)
 
 3.  **粘贴 Workflow 代码并命名文件**：
 
@@ -41,7 +41,7 @@
           * 将其值修改为 **你 Fork 的原始仓库** 的路径。格式通常是 `原始仓库拥有者名称/原始仓库名称`。
               * 例如，如果你 Fork 的是 `some-cool-project/some-cool-project`，那么这里就填写 `some-cool-project/some-cool-project`。
               * 这个信息通常在你 Fork 仓库页面的仓库名称下方，会有一行小字显示 "forked from OWNER/REPO"。
-              ![image](https://github.com/user-attachments/assets/977f6c4b-79ae-415f-9a8e-e89a7d890bea)
+![image](https://github.com/user-attachments/assets/977f6c4b-79ae-415f-9a8e-e89a7d890bea)
 
       * **(可选) 定时任务执行频率 (`cron`)**：
 
@@ -66,4 +66,4 @@
       * 在左侧列表中，你应该能看到你刚刚创建的 Workflow 名称 (例如 "Upstream Sync")。点击它。
       * 在右侧，你会看到一个 **Run workflow** 的下拉按钮（如果 `workflow_dispatch:` 已配置）。点击它，然后再次点击绿色的 **Run workflow** 按钮。
       * 你可以点击正在运行的 Workflow 实例来查看其执行日志和状态，确保一切按预期工作。如果运行成功，表示配置无误。
-      ![image](https://github.com/user-attachments/assets/5cf5c5be-4a55-4a1d-9e78-9bac9c47fa31)
+![image](https://github.com/user-attachments/assets/5cf5c5be-4a55-4a1d-9e78-9bac9c47fa31)
