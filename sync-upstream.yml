@@ -1,0 +1,61 @@
+# Workflow 的名称，会显示在 GitHub Actions 页面
+name: Upstream Sync
+
+# 为此 Workflow 中的所有 job 和 step 设置默认权限
+# 如果你的 Action 需要推送到仓库，这个权限是必需的
+permissions:
+  contents: write # 允许 Action 写入仓库内容，例如推送合并的更改
+
+# 定义 Workflow 的触发条件
+on:
+  schedule:
+      # cron 表达式，用于定时触发 Workflow
+      # '0 0 * * 0' 表示在每周日的 UTC 时间午夜 (0点0分) 运行
+    - cron: '0 0 * * 0' # 每周日午夜运行
+  workflow_dispatch: # 允许手动从 Actions 标签页触发此 Workflow
+
+# 定义 Workflow 中要执行的任务 (job)
+jobs:
+  # 定义一个名为 'sync_with_upstream' 的 job
+  sync_with_upstream:
+    name: Sync with Upstream # job 在 UI 中显示的名称
+    runs-on: ubuntu-latest # 指定 job 运行在最新版的 Ubuntu 环境中
+    # 条件判断：仅当这个仓库是一个 fork 时才运行此 job
+    # github.event.repository.fork 是一个布尔值，true 表示是 fork
+    if: ${{ github.event.repository.fork }}
+
+    # job 包含的一系列步骤 (step)
+    steps:
+        # 第一个步骤：检出（下载）当前仓库的代码到运行器环境
+      - name: Checkout target repo # 步骤名称
+        uses: actions/checkout@v3 # 使用官方的 checkout action，版本为 v3
+
+        # 第二个步骤：使用第三方 Action 来同步上游仓库的更改
+      - name: Sync Upstream # 步骤名称
+        # 使用 aormsby/Fork-Sync-With-Upstream-action 这个社区 Action
+        # @v3.4 指定了使用的 Action 版本
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          # 目标仓库（即当前你的 fork 仓库）的 token
+          # ${{ secrets.GITHUB_TOKEN }} 是 GitHub 自动为每个 workflow 运行创建的 token
+          # 它具有对当前仓库的写入权限 (因为上面设置了 permissions: contents: write)
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # 上游（原始）仓库的名称，格式为 "owner/repository_name"
+          upstream_sync_repo: unclecode/crawl4ai
+          # 要从上游仓库同步的分支名称
+          upstream_sync_branch: main
+          # 要同步到的目标仓库（你的 fork）中的分支名称
+          target_sync_branch: main
+          # 是否启用测试模式。false 表示实际执行同步操作。
+          # 如果设置为 true，则不会实际推送更改，只会打印将要执行的操作。
+          test_mode: false
+
+        # 第三个步骤：检查上一步（Sync Upstream）是否失败
+      - name: Check for Failure # 步骤名称
+        # 条件判断：仅当之前的步骤中发生任何错误 (failure()) 时才执行此步骤
+        if: failure()
+        run: |
+          # 输出错误信息到 Action 日志
+          echo "[Error] Due to a change in the workflow file of the upstream repository, GitHub has automatically suspended the scheduled automatic update. You need to manually sync your fork."
+          # 以错误状态退出，使整个 job 标记为失败
+          exit 1
